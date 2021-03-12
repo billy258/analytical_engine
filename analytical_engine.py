@@ -17,21 +17,20 @@ def increment_adder(add, acc, c):
 
 def add_digits(add, acc):
     c = 0
-
     while add > 0:
         [add, acc, c] = increment_adder(add, acc, c)
-
     return acc, c
 
 
 ac = input('enter intergar less than 41 digits long: ')
 ae = input('enter intergar less than 41 digits long: ')
+length_ac = len(ac)
+length_ae = len(ae)
 
 for index, digit in enumerate(ac):
-    accumulator[len(ac) - index] = int(digit)
+    accumulator[index] = int(digit)
 for index, digit in enumerate(ae):
-    addend[len(addend) - index] = int(digit)
+    addend[index] = int(digit)
 
-print(accumulator, addend, sep=' ')
 print(accumulator, addend, sep=' ')
 print(add_digits(addend, accumulator))
