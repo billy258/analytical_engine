@@ -24,15 +24,16 @@ def add_digits(add, acc):
 
 ac = input('enter intergar less than 41 digits long: ')
 ae = input('enter intergar less than 41 digits long: ')
-length_ac = len(ac)
-length_ae = len(ae)
 
-for index, digit in enumerate(ac):
-    accumulator[index] = int(digit)
-for index, digit in enumerate(ae):
-    addend[index] = int(digit)
+for index, digit in enumerate(reversed(ac)):
+    accumulator[-1 - index] = int(digit)
+for index, digit in enumerate(reversed(ae)):
+    addend[-1 - index] = int(digit)
 
-for number in range(len(accumulator)):
+for i, d in reversed(list(enumerate(addend[:38]))):
+    total, remainder = add_digits(d, accumulator[i])
+    accumulator[i] = total
+    accumulator[i + 1] = remainder
 
-print(accumulator, addend, sep=' ')
-print(add_digits(addend, accumulator))
+
+print(accumulator)
