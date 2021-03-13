@@ -32,5 +32,7 @@ for index, digit in enumerate(ac):
 for index, digit in enumerate(ae):
     addend[index] = int(digit)
 
+for number in range(len(accumulator)):
+
 print(accumulator, addend, sep=' ')
 print(add_digits(addend, accumulator))
