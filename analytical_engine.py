@@ -15,6 +15,22 @@ def increment_adder(add, acc, c):
     return add, acc, c
 
 
+def subtracter(add, acc, c):
+    add -= 1
+    if acc <= 0:
+        c += 1
+    acc = (acc - 1) % 10
+
+    return add, acc, c
+
+
+def subtract_digits(add, acc):
+    c = 0
+    while add > 0:
+        [add, acc, c] = subtracter(add, acc, c)
+    return acc, c
+
+
 def add_digits(add, acc):
     c = 0
     while add > 0:
@@ -22,8 +38,9 @@ def add_digits(add, acc):
     return acc, c
 
 
-ac = input('enter intergar less than 41 digits long: ')
-ae = input('enter intergar less than 41 digits long: ')
+ac = input('enter intergar less than 41 digits long (accumulator): ')
+ae = input('enter intergar less than 41 digits long(addend): ')
+inp = input('adding or subtracting? +/-: ')
 
 for index, digit in enumerate(reversed(ac)):
     accumulator[-1 - index] = int(digit)
@@ -32,10 +49,17 @@ for index, digit in enumerate(reversed(ae)):
 
 print('accumulators: ', accumulator, 'addend: ', addend, sep="\n")
 
-for i, d in reversed(list(enumerate(addend))):
-    stack = carry.pop()
-    total, remainder = add_digits(d+stack, accumulator[i])
-    accumulator[i] = total
-    carry.append(remainder)
+if inp == '+':
+    for i, d in reversed(list(enumerate(addend))):
+        stack = carry.pop()
+        total, remainder = add_digits(d+stack, accumulator[i])
+        accumulator[i] = total
+        carry.append(remainder)
+if inp == '-':
+    for i, d in reversed(list(enumerate(addend))):
+        stack = carry.pop()
+        total, remainder = subtract_digits(d, accumulator[i]-stack)
+        accumulator[i] = total % 10
+        carry.append(remainder)
 
-print('answer: ', accumulator)
+print('answer:\n', accumulator)
