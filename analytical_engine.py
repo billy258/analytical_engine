@@ -30,10 +30,12 @@ for index, digit in enumerate(reversed(ac)):
 for index, digit in enumerate(reversed(ae)):
     addend[-1 - index] = int(digit)
 
-for i, d in reversed(list(enumerate(addend[:38]))):
+print('accumulators: ', accumulator,'addend: ', addend, sep="\n")
+
+for i, d in reversed(list(enumerate(addend))):
+    stack = carry.pop()
     total, remainder = add_digits(d, accumulator[i])
-    accumulator[i] = total
-    accumulator[i + 1] = remainder
+    accumulator[i] = total + stack
+    carry.append(remainder)
 
-
-print(accumulator)
+print('answer: ',accumulator)
