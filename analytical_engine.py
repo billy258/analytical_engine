@@ -4,21 +4,22 @@ def increment_adder(add, acc, c):
     if acc == 0:
         c = c + 1
     return add, acc, c
+# The carry here means the number being carried to the next most significant digit
 
 
-def decrement_numbers(add, acc, c):
-    add -= 1
-    if acc <= 0:
-        c += 1
+def decrement_numbers(acc, add, c):
     acc = (acc - 1) % 10
+    add -= 1
+    if acc == 9:
+        c -= 1
+    return acc, add, c
+# The carry here means if c = 0, there is a number carried forward, c = 1 means there isn't
 
-    return add, acc, c
 
-
-def subtract_digits(add, acc):
-    c = 0
+def subtract_digits(acc, add):
+    c = 1
     while add > 0:
-        [add, acc, c] = decrement_numbers(add, acc, c)
+        [acc, add, c] = decrement_numbers(acc, add, c)
     return acc, c
 
 
@@ -38,9 +39,9 @@ def addition_mill(add):
 
 def subtraction_mill(add):
     for i, d in reversed(list(enumerate(add))):
-        total, remainder = subtract_digits(d, accumulator[i])
+        total, remainder = subtract_digits(accumulator[i], d)
         accumulator[i] = total
-        carry[i-1] = remainder
+        carry[i] = remainder
 
 
 def axes_maker(string, axes):
@@ -63,14 +64,16 @@ print('accumulator: ', accumulator, 'addend: ', addend, sep="\n")
 
 if inp == '+':
     addition_mill(addend)
-    print('carry: ', carry)
+    print('carry:\n', carry)
     for index, c in enumerate(carry):
         accumulator[index] += c
+    print('answer:\n', accumulator)
 if inp == '-':
     subtraction_mill(addend)
-    print('carry: ', carry)
-    for index, c in enumerate(carry):
-        accumulator[index] -= c
-
-
-print('answer:\n', accumulator)
+    for index in reversed(range(40)):
+        if carry[index] == 0:
+            accumulator[index-1] = (accumulator[index-1] - 1) % 10
+            if accumulator[index-1] == 9:
+                carry[index-1] = 0
+    print('carry:\n', carry)
+    print('answer:\n', accumulator)
