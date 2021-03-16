@@ -38,28 +38,42 @@ def add_digits(add, acc):
     return acc, c
 
 
+def addition_mill(add):
+    for i, d in reversed(list(enumerate(add))):
+        total, remainder = add_digits(d, accumulator[i])
+        accumulator[i] = total
+        carry[i-1] = remainder
+
+
+def subtraction_mill(add):
+    for i, d in reversed(list(enumerate(add))):
+        total, remainder = subtract_digits(d, accumulator[i])
+        accumulator[i] = total % 10
+        carry[i-1] = remainder
+
+
+def axes_maker(string, axes):
+    for wheel, digit in enumerate(reversed(string)):
+        axes[-1 - wheel] = int(digit)
+
+
 ac = input('enter intergar less than 41 digits long (accumulator): ')
 ae = input('enter intergar less than 41 digits long(addend): ')
 inp = input('adding or subtracting? +/-: ')
 
-for index, digit in enumerate(reversed(ac)):
-    accumulator[-1 - index] = int(digit)
-for index, digit in enumerate(reversed(ae)):
-    addend[-1 - index] = int(digit)
+axes_maker(ac, accumulator)
+axes_maker(ae, addend)
 
 print('accumulators: ', accumulator, 'addend: ', addend, sep="\n")
 
 if inp == '+':
-    for i, d in reversed(list(enumerate(addend))):
-        stack = carry.pop()
-        total, remainder = add_digits(d+stack, accumulator[i])
-        accumulator[i] = total
-        carry.append(remainder)
+    addition_mill(addend)
+    for index, c in enumerate(carry):
+        accumulator[index] += c
 if inp == '-':
-    for i, d in reversed(list(enumerate(addend))):
-        stack = carry.pop()
-        total, remainder = subtract_digits(d, accumulator[i]-stack)
-        accumulator[i] = total % 10
-        carry.append(remainder)
+    subtraction_mill(addend)
+    for index, c in enumerate(carry):
+        accumulator[index] -= c
+
 
 print('answer:\n', accumulator)
