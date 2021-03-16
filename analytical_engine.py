@@ -1,33 +1,25 @@
-addend = [0 for a in range(40)]
-carry = [0 for b in range(40)]
-accumulator = [0 for c in range(40)]
-
-
-# This is the machinery of the machine
 def increment_adder(add, acc, c):
-    # This reduces the addend by 1
     add = add - 1
-    # This increments accumulator by one
     acc = (acc + 1) % 10
-    # If the accumulator is 0 increment the carry
     if acc == 0:
         c = c + 1
     return add, acc, c
+# The carry here means the number being carried to the next most significant digit
 
 
-def subtracter(add, acc, c):
-    add -= 1
-    if acc <= 0:
-        c += 1
+def decrement_numbers(acc, add, c):
     acc = (acc - 1) % 10
+    add -= 1
+    if acc == 9:
+        c -= 1
+    return acc, add, c
+# The carry here means if c = 0, there is a number carried forward, c = 1 means there isn't
 
-    return add, acc, c
 
-
-def subtract_digits(add, acc):
-    c = 0
+def subtract_digits(acc, add):
+    c = 1
     while add > 0:
-        [add, acc, c] = subtracter(add, acc, c)
+        [acc, add, c] = decrement_numbers(acc, add, c)
     return acc, c
 
 
@@ -38,28 +30,50 @@ def add_digits(add, acc):
     return acc, c
 
 
-ac = input('enter intergar less than 41 digits long (accumulator): ')
-ae = input('enter intergar less than 41 digits long(addend): ')
+def addition_mill(add):
+    for i, d in reversed(list(enumerate(add))):
+        total, remainder = add_digits(d, accumulator[i])
+        accumulator[i] = total
+        carry[i-1] = remainder
+
+
+def subtraction_mill(add):
+    for i, d in reversed(list(enumerate(add))):
+        total, remainder = subtract_digits(accumulator[i], d)
+        accumulator[i] = total
+        carry[i] = remainder
+
+
+def axes_maker(string, axes):
+    for wheel, digit in enumerate(reversed(string)):
+        axes[-1 - wheel] = int(digit)
+
+
+addend = [0 for a in range(40)]
+carry = [0 for b in range(40)]
+accumulator = [0 for c in range(40)]
+
+ac = input('enter integer less than 41 digits long (accumulator): ')
+ae = input('enter integer less than 41 digits long(addend): ')
 inp = input('adding or subtracting? +/-: ')
 
-for index, digit in enumerate(reversed(ac)):
-    accumulator[-1 - index] = int(digit)
-for index, digit in enumerate(reversed(ae)):
-    addend[-1 - index] = int(digit)
+axes_maker(ac, accumulator)
+axes_maker(ae, addend)
 
-print('accumulators: ', accumulator, 'addend: ', addend, sep="\n")
+print('accumulator: ', accumulator, 'addend: ', addend, sep="\n")
 
 if inp == '+':
-    for i, d in reversed(list(enumerate(addend))):
-        stack = carry.pop()
-        total, remainder = add_digits(d+stack, accumulator[i])
-        accumulator[i] = total
-        carry.append(remainder)
+    addition_mill(addend)
+    for index, c in enumerate(carry):
+        accumulator[index] += c
+    print('carry:\n', carry)
+    print('answer:\n', accumulator)
 if inp == '-':
-    for i, d in reversed(list(enumerate(addend))):
-        stack = carry.pop()
-        total, remainder = subtract_digits(d, accumulator[i]-stack)
-        accumulator[i] = total % 10
-        carry.append(remainder)
-
-print('answer:\n', accumulator)
+    subtraction_mill(addend)
+    for index in reversed(range(40)):
+        if carry[index] == 0:
+            accumulator[index-1] = (accumulator[index-1] - 1) % 10
+            if accumulator[index-1] == 9:
+                carry[index-1] = 0
+    print('carry:\n', carry)
+    print('answer:\n', accumulator)
