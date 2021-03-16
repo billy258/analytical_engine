@@ -64,9 +64,9 @@ print('accumulator: ', accumulator, 'addend: ', addend, sep="\n")
 
 if inp == '+':
     addition_mill(addend)
-    print('carry:\n', carry)
     for index, c in enumerate(carry):
         accumulator[index] += c
+    print('carry:\n', carry)
     print('answer:\n', accumulator)
 if inp == '-':
     subtraction_mill(addend)
