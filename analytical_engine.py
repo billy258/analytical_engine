@@ -34,7 +34,7 @@ def addition_mill(add):
     for i, d in reversed(list(enumerate(add))):
         total, remainder = add_digits(d, accumulator[i])
         accumulator[i] = total
-        carry[i-1] = remainder
+        carry[i] = remainder
 
 
 def subtraction_mill(add):
@@ -64,8 +64,11 @@ print('accumulator: ', accumulator, 'addend: ', addend, sep="\n")
 
 if inp == '+':
     addition_mill(addend)
-    for index, c in enumerate(carry):
-        accumulator[index] += c
+    for index in reversed(range(40)):
+        if carry[index] > 0:
+            accumulator[index-1] = (accumulator[index-1] + 1) % 10
+            if accumulator[index-1] == 0:
+                carry[index-1] += 1
     print('carry:\n', carry)
     print('answer:\n', accumulator)
 if inp == '-':
@@ -76,4 +79,4 @@ if inp == '-':
             if accumulator[index-1] == 9:
                 carry[index-1] = 0
     print('carry:\n', carry)
-    print('answer:\n', accumulator)
+    print('answer:\n', accumulator.join())
